@@ -6,6 +6,7 @@ A multi-agent LLM system that automates content generation using typed models, L
 
 - Research Agent: Generates factual bullet points on a given topic
 - Content Agent: Creates platform-specific content based on research
+- Image Agent: Creates visual imagery based on the generated content
 - LangGraph orchestration for agent workflow
 - PydanticAI for strong typing and structured LLM outputs
 
@@ -52,18 +53,23 @@ poetry shell
 
 ## Usage
 
-Generate content by running the main script with your desired topic, platform, and tone:
+Generate content and images by running the main script with your desired topic, platform, and tone:
 
 ```bash
 # Basic usage
 python main.py --topic "your topic here" --platform [twitter|linkedin|medium] --tone [professional|casual|informative]
 
-# Example: Create a professional Medium post about AI ethics
+# Example: Create a professional Medium post about AI ethics with an accompanying image
 python main.py --topic "artificial intelligence ethics" --platform medium --tone professional
 
-# Example: Create a casual Twitter post about renewable energy
+# Example: Create a casual Twitter post about renewable energy with an accompanying image
 python main.py --topic "renewable energy trends" --platform twitter --tone casual
 ```
+
+The system will:
+1. Research factual bullet points about your topic
+2. Generate platform-specific content with the specified tone
+3. Create an AI-generated image that complements the content
 
 ## Supported Platforms
 
@@ -76,6 +82,8 @@ python main.py --topic "renewable energy trends" --platform twitter --tone casua
 - **Professional**: Formal and business-oriented language
 - **Casual**: Conversational and relaxed style
 - **Informative**: Educational and fact-focused approach
+- **Persuasive**: Convincing and compelling language
+- **Enthusiastic**: Energetic and passionate expression
 
 ## Project Structure
 
@@ -83,11 +91,14 @@ python main.py --topic "renewable energy trends" --platform twitter --tone casua
 .
 ├── agents/           # Agent implementations
 │   ├── research.py   # ResearchAgent using PydanticAI
-│   └── content.py    # ContentAgent using PydanticAI
+│   ├── content.py    # ContentAgent using PydanticAI
+│   └── image.py      # ImageAgent using PydanticAI and OpenAI's image generation
 ├── flow/             # LangGraph workflow
 │   └── graph.py      # Agent orchestration graph
 ├── models/           # Typed models
 │   └── schema.py     # Pydantic models for agent I/O
+├── data/             # Generated output
+│   └── images/       # Generated images
 └── main.py          # CLI entrypoint
 ```
 
@@ -99,12 +110,4 @@ To contribute to this project:
 2. Make your changes following PEP 8 and project conventions
 3. Run the application to test your changes
 4. Add unit tests for new functionality
-- Medium
 
-## Supported Tones
-
-- Informative
-- Persuasive
-- Casual
-- Professional
-- Enthusiastic
