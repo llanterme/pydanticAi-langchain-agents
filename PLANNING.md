@@ -1,0 +1,75 @@
+# PLANNING.md
+
+## 🧠 Project Overview
+
+We are building a **multi-agent LLM system** that automates content generation using typed models, LangGraph orchestration, and OpenAI completions. Agents communicate in sequence, simulating a real-world content production workflow.
+
+---
+
+## 🔧 Core Technologies (Latest Versions)
+
+| Library        | Version     | Purpose                                                           |
+|----------------|-------------|-------------------------------------------------------------------|
+| [PydanticAI](https://ai.pydantic.dev) | `0.2.15`      | Declarative prompt modeling & structured LLM output parsing       |
+| [LangGraph](https://pypi.org/project/langgraph) | `0.4.8`     | DAG-style multi-agent orchestration                              |
+| [OpenAI SDK](https://pypi.org/project/openai)  | `1.84.0`     | Call GPT-4o and other models through `chat.completions` endpoint |
+| [Poetry](https://python-poetry.org)            | `1.8.4`      | Dependency, packaging, and virtualenv management                 |
+| [Logfire](https://ai.pydantic.dev/logfire)     | `3.18.0`      | Observability and structured trace logging for agents            |
+| [Python](https://www.python.org)               | `3.10+`      | Language runtime                                                 |
+
+---
+
+## 🧩 Agents
+
+### 1. **Research Agent**
+
+- Accepts CLI arguments:
+  - `--topic`: string
+  - `--platform`: one of [`twitter`, `linkedin`, `medium`]
+  - `--tone`: one of [`informative`, `persuasive`, `casual`, `professional`, `enthusiastic`]
+- Calls OpenAI to return 5–7 factual bullet points
+- Returns a structured `ResearchResponse`
+
+### 2. **Content Agent**
+
+- Consumes the facts from the Research Agent
+- Generates a post for the specified platform and tone
+- Response optionally includes a title (for Medium)
+
+---
+
+## ⚙️ PydanticAI Usage Summary
+
+---
+
+## 🎯 Goals
+
+- ✅ Model a **typed multi-agent pipeline** using LangGraph and PydanticAI  
+- ✅ Automatically generate and validate prompts using structured models  
+- ✅ Use `OpenAI` for inference via `chat.completions` (streaming optional)  
+- ✅ Keep the codebase modular, typed, and clean for reusability  
+- ✅ Structure the project for future extension (e.g., SEOAgent, FactCheckerAgent)  
+- ✅ **Generate comprehensive unit tests** for all components with high test coverage
+
+---
+
+
+## 📂 Project Structure
+
+```
+/llm_agents_demo
+├── pyproject.toml
+├── README.md
+├── planning.md
+├── .env                     # Contains OPENAI_API_KEY
+├── models/
+│   └── schema.py           # PydanticAI input/output models
+├── agents/
+│   ├── research.py         # ResearchAgent logic
+│   ├── content.py          # ContentAgent logic
+│   └── __init__.py
+├── flow/
+│   └── graph.py            # LangGraph definition
+├── main.py                 # Entrypoint CLI + flow runner
+
+```

@@ -1,0 +1,71 @@
+You're my AI code assistant for a multi-agent LangGraph + PydanticAI project.
+
+We are building a multi-agent LLM system that automates content generation using typed models, LangGraph orchestration, and OpenAI completions.
+
+FIRST STEP: Read and review the PLANNING.md file to understand the project scope, constraints, file structure, and exact library versions and API patterns.
+
+PROJECT REQUIREMENTS:
+
+Use Poetry for environment and dependency management (Python 3.10+). I have already create a "pyproject.toml" file.
+
+Define all input and output models using Pydantic BaseModel with Field(description=...).
+
+Use PydanticAI Agent objects with model="openai:gpt-4o" and result_type set to a typed schema.
+
+Do not use deprecated decorators like @aiconfig or ai().
+
+Use LangGraph to orchestrate the agent flow from ResearchAgent to ContentAgent.
+
+Follow PEP 8. Use descriptive names. Functions must be ≤50 lines and follow single-responsibility.
+
+Prefer pure functions without side effects.
+
+IMPLEMENTATION SEQUENCE:
+
+models/schema.py:
+
+Define ResearchRequest, ResearchResponse, ContentRequest, and ContentResponse.
+
+Use BaseModel with descriptions and examples.
+
+Align with the current PydanticAI syntax and latest standards.
+
+agents/research.py and agents/content.py:
+
+Create Agent instances with result_type pointing to the correct response model.
+
+Use .run_sync(...) for invocation.
+
+Ensure state input/output is in dict format.
+
+flow/graph.py:
+
+Create a LangGraph DAG with the following nodes: research → content → end.
+
+Handle state transitions and agent flow cleanly.
+
+main.py:
+
+Accept CLI args: --topic, --platform, --tone.
+
+Run the LangGraph and return the final result.
+
+CRITICAL RULES:
+
+Always match library versions as listed in PLANNING.md.
+
+Do not use deprecated PydanticAI APIs.
+
+OPENAI_API_KEY must be in the .env file.
+
+Only implement what is scoped in PLANNING.md.
+
+Update TASK.md when a feature is completed.
+
+Follow PLANNING.md and workspace rules at all times. Never implement features that are not documented.
+
+Context7 Docs - Use MCP server.
+https://context7.com/pydantic/pydantic-ai
+
+
+

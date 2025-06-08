@@ -1,0 +1,6 @@
+---
+description: Code & Process Standards for Python Projects
+globs:
+  - "**/*.py"
+alwaysApply: true
+---
