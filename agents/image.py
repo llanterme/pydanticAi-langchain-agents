@@ -29,7 +29,7 @@ class ImageAgent:
         """Initialize the ImageAgent with OpenAI model configuration."""
         self.agent = Agent(
             model="openai:gpt-4o",
-            result_type=ImageResponse,
+            output_type=ImageResponse,
             system_prompt=self._get_system_prompt()
         )
         self.client = OpenAI()

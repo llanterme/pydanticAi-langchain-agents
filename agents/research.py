@@ -29,7 +29,7 @@ class ResearchAgent:
         """Initialize the ResearchAgent with OpenAI model configuration."""
         self.agent = Agent(
             model="openai:gpt-4o",
-            result_type=ResearchResponse,
+            output_type=ResearchResponse,
             system_prompt=self._get_system_prompt()
         )
     

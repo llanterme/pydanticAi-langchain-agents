@@ -29,7 +29,7 @@ class ContentAgent:
         """Initialize the ContentAgent with OpenAI model configuration."""
         self.agent = Agent(
             model="openai:gpt-4o",
-            result_type=ContentResponse,
+            output_type=ContentResponse,
             system_prompt=self._get_system_prompt()
         )
     
