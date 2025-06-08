@@ -12,7 +12,8 @@ from langgraph.constants import END
 
 from agents.research import ResearchAgent
 from agents.content import ContentAgent
-from models.schema import ResearchResponse, ContentResponse, Platform, Tone
+from agents.image import ImageAgent
+from models.schema import ResearchResponse, ContentResponse, ImageResponse, Platform, Tone
 
 
 class WorkflowState(TypedDict, total=False):
@@ -23,6 +24,7 @@ class WorkflowState(TypedDict, total=False):
     tone: Tone
     research_result: ResearchResponse
     content_result: ContentResponse
+    image_result: ImageResponse
 
 
 def create_workflow_graph():
@@ -39,6 +41,7 @@ def create_workflow_graph():
     # Initialize agents
     research_agent = ResearchAgent()
     content_agent = ContentAgent()
+    image_agent = ImageAgent()
     
     # Create state graph
     workflow = StateGraph(WorkflowState)
@@ -46,10 +49,12 @@ def create_workflow_graph():
     # Add nodes to the graph
     workflow.add_node("research", research_agent.run)
     workflow.add_node("content", content_agent.run)
+    workflow.add_node("image", image_agent.run)
     
-    # Define the edges (research → content → end)
+    # Define the edges (research → content → image → end)
     workflow.add_edge("research", "content")
-    workflow.add_edge("content", END)
+    workflow.add_edge("content", "image")
+    workflow.add_edge("image", END)
     
     # Set the entry point
     workflow.set_entry_point("research")

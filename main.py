@@ -99,26 +99,27 @@ def run_workflow(args: argparse.Namespace) -> Dict[str, Any]:
 
 def display_results(state: Dict[str, Any]) -> None:
     """
-    Display the workflow results to the user.
+    Display the workflow results."""
+    platform = state["platform"].value
+    content = state["content_result"]
+    image_result = state.get("image_result")
     
-    Args:
-        state: Final workflow state containing results.
-    """
-    content_result = state.get("content_result")
-    if not content_result:
-        print("Error: No content was generated.")
-        return
-    
-    platform = state.get("platform")
-    print("\n" + "=" * 50)
-    print(f"GENERATED CONTENT FOR {platform.value.upper()}")
+    print("=" * 50)
+    print(f"GENERATED CONTENT FOR {platform.upper()}")
     print("=" * 50)
     
-    if content_result.title:
-        print(f"\nTITLE: {content_result.title}")
+    if content.title:
+        print("\nTITLE: " + content.title)
     
-    print(f"\nCONTENT:\n{content_result.content}")
-    print("\n" + "=" * 50)
+    print("\nCONTENT:")
+    print(content.content)
+    
+    if image_result:
+        print("\nGENERATED IMAGE:")
+        print(f"Prompt: {image_result.image_prompt}")
+        print(f"Saved to: {image_result.image_path}")
+    
+    print("=" * 50)
 
 
 def main() -> int:
