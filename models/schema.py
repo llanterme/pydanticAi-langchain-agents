@@ -1,11 +1,12 @@
 """
 Schema definitions for agent inputs and outputs.
 
-This module contains all Pydantic models used by the research and content agents.
+This module contains all Pydantic models used by the research, content, and image agents.
 """
 
 from enum import Enum
 from typing import List, Optional
+from pathlib import Path
 
 from pydantic import BaseModel, Field
 
@@ -113,4 +114,29 @@ class ContentResponse(BaseModel):
             "AI ethics isn't just theoretical anymore. With 75% of enterprises adopting AI by 2025, we need practical governance frameworks now. #AIethics #TechTrends",
             "Excited to share my latest thoughts on sustainable fashion! 🌱👗 The industry is transforming with 65% of consumers now willing to pay more for eco-friendly options. What's your take?"
         ]
+    )
+
+
+class ImageRequest(BaseModel):
+    """Request for the ImageAgent."""
+    
+    content: ContentResponse = Field(
+        description="The generated content from which to create an image."
+    )
+    platform: Platform = Field(
+        description="The platform for which the content was created."
+    )
+    tone: Tone = Field(
+        description="The tone of the content."
+    )
+
+
+class ImageResponse(BaseModel):
+    """Response from the ImageAgent."""
+    
+    image_prompt: str = Field(
+        description="The prompt used to generate the image."
+    )
+    image_path: Path = Field(
+        description="Path to the generated image file."
     )
