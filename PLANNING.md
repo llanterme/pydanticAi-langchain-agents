@@ -43,6 +43,14 @@ We are building a **multi-agent LLM system** that automates content generation u
 
 ---
 
+## 🧩 UI Streamlit 
+
+- Wrap the app in a streamlit ui. 
+- The user should be able to input the topic, platform, and tone. 
+- Once the user has inputed these values, the app should run the agents and display the results including the image.
+
+---
+
 ## ⚙️ PydanticAI Usage Summary
 
 ---
