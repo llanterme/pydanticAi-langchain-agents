@@ -1,18 +1,30 @@
 # Multi-Agent LLM System
 
-A multi-agent LLM system that automates content generation using typed models, LangGraph orchestration, and OpenAI completions. This system uses a pipeline of specialized agents to first research a topic, then transform that research into platform-optimized content.
+A multi-agent LLM system that automates content generation using typed models, LangGraph orchestration, and OpenAI completions. This system uses a pipeline of specialized agents to research a topic, transform that research into platform-optimized content, and generate accompanying images.
 
 ## Features
 
-- Research Agent: Generates factual bullet points on a given topic
-- Content Agent: Creates platform-specific content based on research
-- Image Agent: Creates visual imagery based on the generated content
-- LangGraph orchestration for agent workflow
-- PydanticAI for strong typing and structured LLM outputs
+- **Research Agent**: Generates 5-7 factual bullet points on a given topic
+- **Content Agent**: Creates platform-specific content based on research with appropriate tone
+- **Image Agent**: Creates visual imagery using OpenAI's image generation API (gpt-image-1 model)
+- **Streamlit Web UI**: Interactive interface for easy content generation
+- **LangGraph orchestration**: Structured workflow between agents
+- **PydanticAI**: Strong typing and structured LLM outputs
+
+## Core Technologies
+
+| Library        | Version     | Purpose                                                           |
+|----------------|-------------|-------------------------------------------------------------------|
+| PydanticAI     | 0.2.15      | Declarative prompt modeling & structured LLM output parsing       |
+| LangGraph      | 0.4.8       | DAG-style multi-agent orchestration                              |
+| OpenAI SDK     | 1.84.0      | Call GPT-4o and other models through API endpoints               |
+| Poetry         | 1.8.4       | Dependency, packaging, and virtualenv management                 |
+| Logfire        | 3.18.0      | Observability and structured trace logging for agents            |
+| Streamlit      | Latest      | Interactive web interface                                        |
 
 ## Prerequisites
 
-- Python 3.9.10 or higher
+- Python 3.10 or higher
 - Poetry package manager
 - OpenAI API key
 
@@ -59,7 +71,7 @@ Generate content and images by running the main script with your desired topic, 
 
 ```bash
 # Basic usage
-python main.py --topic "your topic here" --platform [twitter|linkedin|medium] --tone [professional|casual|informative]
+python main.py --topic "your topic here" --platform [twitter|linkedin|medium] --tone [professional|casual|informative|persuasive|enthusiastic]
 
 # Example: Create a professional Medium post about AI ethics with an accompanying image
 python main.py --topic "artificial intelligence ethics" --platform medium --tone professional
@@ -80,13 +92,15 @@ streamlit run app.py
 This will open a web interface where you can:
 - Enter your desired topic
 - Select platform (Twitter, LinkedIn, Medium)
-- Choose tone (Professional, Casual, Informative, etc.)
+- Choose tone (Professional, Casual, Informative, Persuasive, Enthusiastic)
 - Generate and view content and images directly in your browser
 
-The system will:
-1. Research factual bullet points about your topic
-2. Generate platform-specific content with the specified tone
-3. Create an AI-generated image that complements the content
+#### Workflow:
+
+1. **Research Phase**: The Research Agent generates 5-7 factual bullet points about your topic
+2. **Content Creation**: The Content Agent transforms these facts into platform-specific content with the specified tone
+3. **Image Generation**: The Image Agent uses OpenAI's gpt-image-1 model to create an AI-generated image that complements the content
+4. **Display**: Results are presented with both the generated content and image
 
 ## Supported Platforms
 
@@ -116,17 +130,30 @@ The system will:
 │   └── schema.py     # Pydantic models for agent I/O
 ├── data/             # Generated output
 │   └── images/       # Generated images
-├── main.py          # CLI entrypoint
-├── app.py           # Streamlit web interface
-└── prompts/         # System prompt templates
+├── main.py           # CLI entrypoint
+├── app.py            # Streamlit web interface
+├── prompts/          # System prompt templates
+├── pyproject.toml    # Poetry configuration
+├── README.md         # Project documentation
+└── PLANNING.md       # Project planning and requirements
 ```
 
 ## Development
 
 To contribute to this project:
 
-1. Ensure you have Poetry installed
-2. Make your changes following PEP 8 and project conventions
-3. Run the application to test your changes
-4. Add unit tests for new functionality
+1. Ensure you have Poetry installed for dependency management
+2. Make your changes following PEP 8 and the project's functional style guidelines
+3. Maintain Python 3.10+ compatibility
+4. Run the application to test your changes
+5. Add comprehensive unit tests for any new functionality
+6. Keep functions/classes small with single responsibilities
+7. Prioritize immutability and pure functions where possible
 
+## Future Extensions
+
+The project structure is designed to support additional agents such as:
+- SEO Agent for optimizing content for search engines
+- Fact Checker Agent for verifying generated content
+- Analytics Agent for tracking content performance
+- Additional platform support (Instagram, Facebook, etc.)
