@@ -1,0 +1,4 @@
+I want you to wrap my app in a ui usig sreamlit. I want the user to be able to input the topic, platform, and tone. 
+Once the user has inputed these values, the app should run the agents and display the results including the image.
+
+Make sure you follow the workspace rules.

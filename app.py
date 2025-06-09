@@ -146,7 +146,7 @@ def display_results(state):
             
             # Display the image
             image = Image.open(image_result.image_path)
-            st.image(image, caption=f"Generated for {platform} content", use_column_width=True)
+            st.image(image, caption=f"Generated for {platform} content", use_container_width=True)
             
             with st.expander("Image Generation Prompt"):
                 st.write(image_result.image_prompt)

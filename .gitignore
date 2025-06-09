@@ -34,6 +34,7 @@ coverage.xml
 env/
 venv/
 ENV/
+data/images
 
 # IDE specific files
 .idea/

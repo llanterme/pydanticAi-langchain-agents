@@ -53,6 +53,8 @@ poetry shell
 
 ## Usage
 
+### Command Line Interface
+
 Generate content and images by running the main script with your desired topic, platform, and tone:
 
 ```bash
@@ -65,6 +67,21 @@ python main.py --topic "artificial intelligence ethics" --platform medium --tone
 # Example: Create a casual Twitter post about renewable energy with an accompanying image
 python main.py --topic "renewable energy trends" --platform twitter --tone casual
 ```
+
+### Streamlit Web Interface
+
+Alternatively, use the Streamlit web interface for a more interactive experience:
+
+```bash
+# Run the Streamlit app
+streamlit run app.py
+```
+
+This will open a web interface where you can:
+- Enter your desired topic
+- Select platform (Twitter, LinkedIn, Medium)
+- Choose tone (Professional, Casual, Informative, etc.)
+- Generate and view content and images directly in your browser
 
 The system will:
 1. Research factual bullet points about your topic
@@ -99,7 +116,9 @@ The system will:
 │   └── schema.py     # Pydantic models for agent I/O
 ├── data/             # Generated output
 │   └── images/       # Generated images
-└── main.py          # CLI entrypoint
+├── main.py          # CLI entrypoint
+├── app.py           # Streamlit web interface
+└── prompts/         # System prompt templates
 ```
 
 ## Development
