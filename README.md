@@ -19,7 +19,6 @@ A multi-agent LLM system that automates content generation using typed models, L
 | LangGraph      | 0.4.8       | DAG-style multi-agent orchestration                              |
 | OpenAI SDK     | 1.84.0      | Call GPT-4o and other models through API endpoints               |
 | Poetry         | 1.8.4       | Dependency, packaging, and virtualenv management                 |
-| Logfire        | 3.18.0      | Observability and structured trace logging for agents            |
 | Streamlit      | Latest      | Interactive web interface                                        |
 
 ## Prerequisites

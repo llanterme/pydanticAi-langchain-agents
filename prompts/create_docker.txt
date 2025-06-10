@@ -1,0 +1,19 @@
+I want to dockerize a Python application that uses Poetry and Streamlit.
+The app should run the Streamlit UI automatically when the container starts.
+
+Here's the command I normally use to launch it:
+
+poetry run streamlit run app.py
+
+Please generate a Dockerfile that:
+
+Installs Poetry
+
+Installs the project dependencies via Poetry
+
+Exposes the default Streamlit port
+
+Sets the container’s entrypoint to run the above command
+
+The app’s main file is app.py, and it’s in the root directory.
+Optimize the image to be as lean as reasonably possible (e.g. use Python 3.10-slim or similar).
