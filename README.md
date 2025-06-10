@@ -19,7 +19,6 @@ A multi-agent LLM system that automates content generation using typed models, L
 | LangGraph      | 0.4.8       | DAG-style multi-agent orchestration                              |
 | OpenAI SDK     | 1.84.0      | Call GPT-4o and other models through API endpoints               |
 | Poetry         | 1.8.4       | Dependency, packaging, and virtualenv management                 |
-| Logfire        | 3.18.0      | Observability and structured trace logging for agents            |
 | Streamlit      | Latest      | Interactive web interface                                        |
 
 ## Prerequisites
@@ -27,6 +26,7 @@ A multi-agent LLM system that automates content generation using typed models, L
 - Python 3.10 or higher
 - Poetry package manager
 - OpenAI API key
+- Docker (optional, if you want to containerize the application)
 
 ## Getting Started
 
@@ -80,9 +80,23 @@ python main.py --topic "artificial intelligence ethics" --platform medium --tone
 python main.py --topic "renewable energy trends" --platform twitter --tone casual
 ```
 
+### Docker Container
+
+You can run the application in a Docker container for a consistent environment across platforms:
+
+```bash
+# Build the Docker image
+docker build -t pydanticai-langchain .
+
+# Run the container
+docker run -p 8501:8501 --env-file .env pydanticai-langchain
+```
+
+This will make the Streamlit application accessible at http://localhost:8501 in your web browser.
+
 ### Streamlit Web Interface
 
-Alternatively, use the Streamlit web interface for a more interactive experience:
+Alternatively, use the Streamlit web interface directly for a more interactive experience:
 
 ```bash
 # Run the Streamlit app
@@ -135,7 +149,8 @@ This will open a web interface where you can:
 ├── prompts/          # System prompt templates
 ├── pyproject.toml    # Poetry configuration
 ├── README.md         # Project documentation
-└── PLANNING.md       # Project planning and requirements
+├── PLANNING.md       # Project planning and requirements
+└── Dockerfile        # Docker container configuration
 ```
 
 ## Development
