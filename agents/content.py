@@ -6,16 +6,17 @@ with the specified tone.
 """
 
 import os
+import time
 from typing import Dict, Any
 
 from dotenv import load_dotenv
 from pydantic_ai import Agent, RunContext
 
 from models.schema import ContentRequest, ContentResponse, Platform
+from utils.logging import log_agent_start, log_agent_completion, log_agent_error
 
 # Load environment variables
 load_dotenv()
-
 
 class ContentAgent:
     """
@@ -98,8 +99,52 @@ class ContentAgent:
         Incorporate the key points from the research naturally into your content.
         """
         
-        result = self.agent.run_sync(prompt)
-        return result.output
+        # Log the start of agent execution
+        log_agent_start(
+            agent_type="ContentAgent",
+            prompt=prompt,
+            ctx={
+                "platform": platform,
+                "tone": tone,
+                "bullet_point_count": len(content_request.research.bullet_points),
+                "input_type": "ContentRequest"
+            }
+        )
+        
+        start_time = time.time()
+        try:
+            result = self.agent.run_sync(prompt)
+            
+            # Calculate elapsed time in milliseconds
+            elapsed_time_ms = (time.time() - start_time) * 1000
+            
+            # Log successful completion
+            log_agent_completion(
+                agent_type="ContentAgent",
+                result=result.output,
+                elapsed_time_ms=elapsed_time_ms,
+                ctx={
+                    "platform": platform,
+                    "tone": tone,
+                    "has_title": result.output.title is not None,
+                    "content_length": len(result.output.content),
+                    "output_type": "ContentResponse"
+                }
+            )
+            
+            return result.output
+            
+        except Exception as e:
+            # Log error
+            log_agent_error(
+                agent_type="ContentAgent",
+                error=e,
+                ctx={
+                    "platform": platform,
+                    "tone": tone
+                }
+            )
+            raise
     
     def run(self, state: Dict[str, Any]) -> Dict[str, Any]:
         """

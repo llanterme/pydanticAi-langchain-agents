@@ -18,6 +18,7 @@ A multi-agent LLM system that automates content generation using typed models, L
 | PydanticAI     | 0.2.15      | Declarative prompt modeling & structured LLM output parsing       |
 | LangGraph      | 0.4.8       | DAG-style multi-agent orchestration                              |
 | OpenAI SDK     | 1.84.0      | Call GPT-4o and other models through API endpoints               |
+| Logfire        | 3.18.0      | Structured tracing and logging for all prompt/response cycles    |
 | Poetry         | 1.8.4       | Dependency, packaging, and virtualenv management                 |
 | Streamlit      | Latest      | Interactive web interface                                        |
 
@@ -142,6 +143,9 @@ This will open a web interface where you can:
 │   └── graph.py      # Agent orchestration graph
 ├── models/           # Typed models
 │   └── schema.py     # Pydantic models for agent I/O
+├── utils/            # Utility modules
+│   ├── logging.py    # Logfire integration for structured logging
+│   └── trace_viewer.py # Tool for viewing and analyzing logfire traces
 ├── data/             # Generated output
 │   └── images/       # Generated images
 ├── main.py           # CLI entrypoint
@@ -151,6 +155,65 @@ This will open a web interface where you can:
 ├── README.md         # Project documentation
 ├── PLANNING.md       # Project planning and requirements
 └── Dockerfile        # Docker container configuration
+```
+
+## Observability with Logfire
+
+This project integrates [Logfire](https://ai.pydantic.dev/logfire) v3.18.0 for comprehensive structured tracing and logging of all prompt/response cycles in the agent system.
+
+### Tracing Features
+
+- **Complete Agent Lifecycle Tracing**: Traces every operation from prompt submission to response generation
+- **Detailed Timing Metrics**: Records response times for each agent and operation
+- **Workflow State Tracking**: Monitors state changes across the entire agent workflow
+- **Exception Handling**: Captures and logs all errors with context
+- **Structured Data**: All trace data is structured for easy analysis
+
+### Using the Trace Viewer
+
+The project includes a trace viewer utility for analyzing agent performance and behavior:
+
+```bash
+# View trace summaries from the last 24 hours
+python -m utils.trace_viewer
+
+# View a specific trace by ID
+python -m utils.trace_viewer --trace-id <trace-id>
+
+# Filter traces by agent type
+python -m utils.trace_viewer --agent ResearchAgent
+
+# Filter traces containing a specific topic
+python -m utils.trace_viewer --topic "artificial intelligence"
+
+# View detailed trace information
+python -m utils.trace_viewer --format detailed
+
+# Export trace data as JSON
+python -m utils.trace_viewer --format json > traces.json
+```
+
+### Programmatic Access to Traces
+
+You can also access trace data programmatically:
+
+```python
+import logfire
+from utils.logging import initialize_logfire
+
+# Initialize logfire
+initialize_logfire()
+
+# Query traces from the last hour
+from datetime import datetime, timedelta
+start_time = datetime.now() - timedelta(hours=1)
+traces = logfire.query_traces(start_time=start_time.isoformat())
+
+# Analyze trace data
+for trace in traces:
+    print(f"Trace ID: {trace['id']}")
+    print(f"Duration: {trace['duration']}ms")
+    # Access spans, events, and other trace data
 ```
 
 ## Development

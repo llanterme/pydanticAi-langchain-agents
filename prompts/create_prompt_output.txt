@@ -1,0 +1,11 @@
+Implement logfire (v3.18.0) in this project to enable structured tracing and logging of all prompt/response cycles.
+
+Refer to the documentation: https://ai.pydantic.dev/logfire
+
+Make sure the integration:
+
+Works seamlessly with existing PydanticAI agent workflows
+
+Captures inputs, outputs, and any exceptions per agent
+
+Adheres to the project’s workspace rules and folder structure
