@@ -8,13 +8,15 @@ accepting topic, platform, and tone arguments.
 import argparse
 import os
 import sys
+import time
 from typing import Dict, Any, Optional
 
-
+import logfire
 from dotenv import load_dotenv
 
 from models.schema import Platform, Tone
 from flow.graph import create_workflow_graph, WorkflowState
+from utils.logging import initialize_logfire, log_workflow_event
 
 
 def parse_args() -> argparse.Namespace:
@@ -91,10 +93,49 @@ def run_workflow(args: argparse.Namespace) -> Dict[str, Any]:
     print(f"  - Platform: {args.platform}")
     print(f"  - Tone: {args.tone}")
     
-    # Execute the workflow and get the final state
-    final_state = workflow.invoke(initial_state)
+    # Log workflow start with execution ID
+    execution_id = str(int(time.time()))
+    log_workflow_event(
+        event_name="workflow_start",
+        state=initial_state,
+        additional_data={
+            "execution_id": execution_id,
+            "args": {
+                "topic": args.topic,
+                "platform": args.platform,
+                "tone": args.tone
+            }
+        }
+    )
     
-    return final_state
+    try:
+        # Execute the workflow and get the final state
+        final_state = workflow.invoke(initial_state)
+        
+        # Log workflow completion
+        log_workflow_event(
+            event_name="workflow_complete",
+            state=final_state,
+            additional_data={
+                "execution_id": execution_id,
+                "status": "success"
+            }
+        )
+        
+        return final_state
+    except Exception as e:
+        # Log workflow error
+        log_workflow_event(
+            event_name="workflow_error",
+            state=initial_state,
+            additional_data={
+                "execution_id": execution_id,
+                "status": "error",
+                "error_type": type(e).__name__,
+                "error_message": str(e)
+            }
+        )
+        raise
 
 
 def display_results(state: Dict[str, Any]) -> None:
@@ -132,7 +173,8 @@ def main() -> int:
     # Load environment variables from .env file
     load_dotenv()
     
-    # Environment variables loaded above
+    # Initialize logfire for structured logging
+    initialize_logfire()
     
     # Validate environment
     error = validate_environment()
@@ -147,18 +189,28 @@ def main() -> int:
         # Handle --help or invalid arguments
         return 1
     
-    try:
-        # Run the workflow
-        final_state = run_workflow(args)
-        
-        # Display results
-        display_results(final_state)
-        
-        return 0
-    except Exception as e:
-        print(f"Error during workflow execution: {str(e)}")
-        print(f"Error: {str(e)}")
-        return 1
+    # Create a span context for the entire execution
+    with logfire.span("agent_workflow_execution") as span:
+        # Set additional attributes on the span
+        span.set_attributes({
+            "service": "pydantic-ai-agents",
+            "topic": args.topic,
+            "platform": args.platform,
+            "tone": args.tone
+        })
+        try:
+            # Run the workflow
+            final_state = run_workflow(args)
+            
+            # Display results
+            display_results(final_state)
+            
+            return 0
+        except Exception as e:
+            print(f"Error during workflow execution: {str(e)}")
+            # Log the error in the trace context
+            logfire.exception(e, message="Workflow execution failed", error_type=type(e).__name__)
+            return 1
 
 
 if __name__ == "__main__":

@@ -6,12 +6,14 @@ that will be used by the ContentAgent for content generation.
 """
 
 import os
+import time
 from typing import Dict, Any
 
 from dotenv import load_dotenv
 from pydantic_ai import Agent, RunContext
 
 from models.schema import ResearchRequest, ResearchResponse
+from utils.logging import log_agent_start, log_agent_completion, log_agent_error
 
 # Load environment variables
 load_dotenv()
@@ -72,8 +74,51 @@ class ResearchAgent:
         target audience on {research_request.platform.value}.
         """
         
-        result = self.agent.run_sync(prompt)
-        return result.output
+        # Log the start of agent execution
+        log_agent_start(
+            agent_type="ResearchAgent",
+            prompt=prompt,
+            ctx={
+                "topic": research_request.topic,
+                "platform": research_request.platform.value,
+                "tone": research_request.tone.value,
+                "input_type": "ResearchRequest"
+            }
+        )
+        
+        start_time = time.time()
+        try:
+            result = self.agent.run_sync(prompt)
+            
+            # Calculate elapsed time in milliseconds
+            elapsed_time_ms = (time.time() - start_time) * 1000
+            
+            # Log successful completion
+            log_agent_completion(
+                agent_type="ResearchAgent",
+                result=result.output,
+                elapsed_time_ms=elapsed_time_ms,
+                ctx={
+                    "topic": research_request.topic,
+                    "bullet_point_count": len(result.output.bullet_points),
+                    "output_type": "ResearchResponse"
+                }
+            )
+            
+            return result.output
+        
+        except Exception as e:
+            # Log error
+            log_agent_error(
+                agent_type="ResearchAgent",
+                error=e,
+                ctx={
+                    "topic": research_request.topic,
+                    "platform": research_request.platform.value,
+                    "tone": research_request.tone.value
+                }
+            )
+            raise
     
     def run(self, state: Dict[str, Any]) -> Dict[str, Any]:
         """

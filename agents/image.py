@@ -8,6 +8,7 @@ based on the content produced by the ContentAgent.
 import os
 import base64
 import logging
+import time
 from pathlib import Path
 from typing import Dict, Any
 import uuid
@@ -16,6 +17,7 @@ from openai import OpenAI
 from pydantic_ai import Agent, RunContext
 
 from models.schema import ImageRequest, ImageResponse
+from utils.logging import log_agent_start, log_agent_completion, log_agent_error
 
 class ImageAgent:
     """
@@ -82,46 +84,128 @@ class ImageAgent:
         The prompt should be descriptive and include visual elements like style, colors, mood, and composition.
         """
         
-        # Generate the image prompt
-        result = self.agent.run_sync(prompt_request)
-        image_prompt = result.output.image_prompt
+        # Log the start of agent execution for prompt creation
+        log_agent_start(
+            agent_type="ImageAgent",
+            prompt=prompt_request,
+            ctx={
+                "platform": platform,
+                "tone": tone,
+                "phase": "prompt_generation",
+                "input_type": "ImageRequest"
+            }
+        )
         
-        # Ensure the images directory exists
-        image_dir = Path("data/images")
-        image_dir.mkdir(parents=True, exist_ok=True)
-        
-        # Generate a unique filename
-        filename = f"{platform}_{uuid.uuid4().hex[:8]}.png"
-        image_path = image_dir / filename
-        
-        # Generate the image using OpenAI's direct images.generate API
+        start_time = time.time()
         try:
-            # Use the exact method shown in the curl example
-            response = self.client.images.generate(
-                model="gpt-image-1",
-                prompt=image_prompt,
-                n=1,
-                size="1024x1024"
+            # Generate the image prompt
+            result = self.agent.run_sync(prompt_request)
+            image_prompt = result.output.image_prompt
+            
+            # Calculate elapsed time for prompt generation in milliseconds
+            prompt_elapsed_ms = (time.time() - start_time) * 1000
+            
+            # Log successful prompt generation
+            log_agent_completion(
+                agent_type="ImageAgent",
+                result={"image_prompt": image_prompt},
+                elapsed_time_ms=prompt_elapsed_ms,
+                ctx={
+                    "platform": platform,
+                    "tone": tone,
+                    "phase": "prompt_generation",
+                    "prompt_length": len(image_prompt)
+                }
             )
             
-            # Extract the base64 image data as shown in the response example
-            image_b64 = response.data[0].b64_json
+            # Ensure the images directory exists
+            image_dir = Path("data/images")
+            image_dir.mkdir(parents=True, exist_ok=True)
+            
+            # Generate a unique filename
+            filename = f"{platform}_{uuid.uuid4().hex[:8]}.png"
+            image_path = image_dir / filename
+            
+            # Log start of image generation phase
+            log_agent_start(
+                agent_type="ImageAgent",
+                prompt=image_prompt,
+                ctx={
+                    "platform": platform,
+                    "tone": tone,
+                    "phase": "image_generation",
+                    "model": "gpt-image-1"
+                }
+            )
+            
+            image_gen_start = time.time()
+            try:
+                # Generate the image using OpenAI's direct images.generate API
+                response = self.client.images.generate(
+                    model="gpt-image-1",
+                    prompt=image_prompt,
+                    n=1,
+                    size="1024x1024"
+                )
                 
-            # Decode and save the image
-            with open(image_path, "wb") as f:
-                f.write(base64.b64decode(image_b64))
+                # Extract the base64 image data
+                image_b64 = response.data[0].b64_json
+                    
+                # Decode and save the image
+                with open(image_path, "wb") as f:
+                    f.write(base64.b64decode(image_b64))
                 
-            print(f"Image generated and saved to {image_path}")
+                # Calculate elapsed time for image generation in milliseconds
+                image_gen_elapsed_ms = (time.time() - image_gen_start) * 1000
                 
+                # Log successful image generation
+                log_agent_completion(
+                    agent_type="ImageAgent",
+                    result={"image_path": str(image_path)},
+                    elapsed_time_ms=image_gen_elapsed_ms,
+                    ctx={
+                        "platform": platform,
+                        "tone": tone,
+                        "phase": "image_generation",
+                        "success": True
+                    }
+                )
+                    
+                print(f"Image generated and saved to {image_path}")
+                    
+            except Exception as e:
+                print(f"Error generating image: {e}")
+                # Log error in image generation
+                log_agent_error(
+                    agent_type="ImageAgent",
+                    error=e,
+                    ctx={
+                        "platform": platform,
+                        "tone": tone,
+                        "phase": "image_generation",
+                        "image_prompt": image_prompt
+                    }
+                )
+                # Create a placeholder path in case of error
+                image_path = Path("data/images/error_placeholder.png")
+            
+            return ImageResponse(
+                image_prompt=image_prompt,
+                image_path=image_path
+            )
+            
         except Exception as e:
-            print(f"Error generating image: {e}")
-            # Create a placeholder path in case of error
-            image_path = Path("data/images/error_placeholder.png")
-        
-        return ImageResponse(
-            image_prompt=image_prompt,
-            image_path=image_path
-        )
+            # Log error in prompt generation
+            log_agent_error(
+                agent_type="ImageAgent",
+                error=e,
+                ctx={
+                    "platform": platform,
+                    "tone": tone,
+                    "phase": "prompt_generation"
+                }
+            )
+            raise
     
     def run(self, state: Dict[str, Any]) -> Dict[str, Any]:
         """
