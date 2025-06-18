@@ -14,7 +14,7 @@ from agents.research import ResearchAgent
 from agents.content import ContentAgent
 from agents.image import ImageAgent
 from models.schema import ResearchResponse, ContentResponse, ImageResponse, Platform, Tone
-from utils.logging import log_workflow_event
+from utils.app_logging import log_workflow_event
 
 
 class WorkflowState(TypedDict, total=False):

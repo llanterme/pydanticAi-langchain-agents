@@ -13,7 +13,7 @@ from datetime import datetime, timedelta
 import logfire
 from dotenv import load_dotenv
 
-from utils.logging import initialize_logfire
+from utils.app_logging import initialize_logfire
 
 
 def parse_args() -> argparse.Namespace:

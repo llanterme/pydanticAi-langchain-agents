@@ -1,0 +1,15 @@
+{
+  "author": "urn:li:person:~",
+  "lifecycleState": "PUBLISHED",
+  "specificContent": {
+    "com.linkedin.ugc.ShareContent": {
+      "shareCommentary": {
+        "text": "🚀 Testing LinkedIn API with curl! This post was created directly via the LinkedIn v2 API. #API #LinkedIn #Test"
+      },
+      "shareMediaCategory": "NONE"
+    }
+  },
+  "visibility": {
+    "com.linkedin.ugc.MemberNetworkVisibility": "PUBLIC"
+  }
+}

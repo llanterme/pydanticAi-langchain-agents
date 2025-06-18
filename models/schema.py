@@ -5,7 +5,7 @@ This module contains all Pydantic models used by the research, content, and imag
 """
 
 from enum import Enum
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 from pathlib import Path
 
 from pydantic import BaseModel, Field
@@ -139,4 +139,40 @@ class ImageResponse(BaseModel):
     )
     image_path: Path = Field(
         description="Path to the generated image file."
+    )
+
+
+class LinkedInPostRequest(BaseModel):
+    """Request for posting content to LinkedIn."""
+    
+    content: ContentResponse = Field(
+        description="The generated content to post to LinkedIn"
+    )
+    post_immediately: bool = Field(
+        default=True,
+        description="Whether to post immediately or return post data"
+    )
+
+
+class LinkedInPostResponse(BaseModel):
+    """Response from LinkedIn posting operation."""
+    
+    success: bool = Field(
+        description="Whether the post was successful"
+    )
+    post_id: Optional[str] = Field(
+        None,
+        description="LinkedIn post ID if successful"
+    )
+    post_url: Optional[str] = Field(
+        None,
+        description="URL to the LinkedIn post if successful"
+    )
+    error_message: Optional[str] = Field(
+        None,
+        description="Error message if posting failed"
+    )
+    api_response: Optional[Dict[str, Any]] = Field(
+        None,
+        description="Full LinkedIn API response"
     )

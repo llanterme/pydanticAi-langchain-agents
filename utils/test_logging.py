@@ -13,7 +13,7 @@ import logfire
 from pydantic_ai import Agent
 from pydantic import BaseModel, Field
 
-from utils.logging import initialize_logfire, log_agent_start, log_agent_completion, log_agent_error
+from utils.app_logging import initialize_logfire, log_agent_start, log_agent_completion, log_agent_error
 
 
 class TestOutput(BaseModel):

@@ -16,7 +16,7 @@ from dotenv import load_dotenv
 
 from models.schema import Platform, Tone
 from flow.graph import create_workflow_graph, WorkflowState
-from utils.logging import initialize_logfire, log_workflow_event
+from utils.app_logging import initialize_logfire, log_workflow_event
 
 
 def parse_args() -> argparse.Namespace:

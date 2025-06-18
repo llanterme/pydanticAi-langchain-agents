@@ -13,7 +13,7 @@ from dotenv import load_dotenv
 from pydantic_ai import Agent, RunContext
 
 from models.schema import ResearchRequest, ResearchResponse
-from utils.logging import log_agent_start, log_agent_completion, log_agent_error
+from utils.app_logging import log_agent_start, log_agent_completion, log_agent_error
 
 # Load environment variables
 load_dotenv()
