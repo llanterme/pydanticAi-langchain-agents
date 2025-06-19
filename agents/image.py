@@ -225,9 +225,9 @@ class ImageAgent:
         )
         
         # Generate the image
-        image_result = self.generate_image(image_request)
+      #  image_result = self.generate_image(image_request)
         
         # Update the state with the image result
-        state["image_result"] = image_result
+        state["image_result"] = ""
         
         return state
